@@ -68,9 +68,17 @@ void handleNewMessages(int numNewMessages) {
         message += "... ... ...";
         bot.sendMessage(chat_id, message);
         wakePC();
+        
       }
 
-      
+      if (text == "/status")
+      {
+        String message = "your computer is ";
+        if(pingPC())
+          message += "online";
+        else
+          message += "offline";
+      }
     }
   }
 }
