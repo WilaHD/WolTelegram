@@ -3,11 +3,13 @@
 #include <WiFiClientSecure.h>
 #include <WakeOnLan.h>
 #include <UniversalTelegramBot.h>                                   // please check, if you installed ArduinoJson 5.13
+#include <ESP32Ping.h>                                              // https://github.com/marian-craciunescu/ESP32Ping
 
 const char* wifissid     = "SSID";                                  
 const char* wifipassword = "xxxxxxxxxxxxx";
-const char *MACAddress = "00:00:00:00:00:00";                       // target
-char* BotToken = "ooooooooo";                                       // token from the Bot-Father
+IPAddress ip = { 123, 456, 789, 000 };                              // target IP-Adress
+const char *MACAddress = "00:00:00:00:00:00";                       // target MAC-Adress
+const char* BotToken = "ooooooooo";                                 // token from the Bot-Father
 String chatIDs[] = { "9876543210" };                                // insert the allowed ShatIDs
 
 int Bot_mtbs = 1000; //mean time between scan messages
@@ -67,6 +69,8 @@ void handleNewMessages(int numNewMessages) {
         bot.sendMessage(chat_id, message);
         wakePC();
       }
+
+      
     }
   }
 }
@@ -76,6 +80,13 @@ void wakePC() {
   
   WOL.calculateBroadcastAddress(WiFi.localIP(), WiFi.subnetMask()); // Optional  => To calculate the broadcast address, otherwise 255.255.255.255 is used (which is denied in some networks).
   WOL.sendMagicPacket(MACAddress);
+}
+
+bool pingPC() {
+  int result = Ping.ping(ip);
+  if( Ping.averageTime() > 0 )
+    return true;
+  return false;
 }
 
 void blink(int ms) {
