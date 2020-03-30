@@ -68,6 +68,14 @@ void handleNewMessages(int numNewMessages) {
         message += "... ... ...";
         bot.sendMessage(chat_id, message);
         wakePC();
+        millisdelay(60000);
+        
+        message = "your computer is ";
+        if(pingPC())
+          message += "online";
+        else
+          message += "offline";
+        bot.sendMessage(chat_id, message);
         
       }
 
@@ -78,6 +86,7 @@ void handleNewMessages(int numNewMessages) {
           message += "online";
         else
           message += "offline";
+        bot.sendMessage(chat_id, message);
       }
     }
   }
@@ -115,4 +124,10 @@ boolean stringArrayContains(String arr[], String w) {
     }
   }
   return false;
+}
+
+void millisdelay(long ms)
+{
+  unsigned long stop_at = millis() + ms;
+  while(millis() < stop at) { }
 }
