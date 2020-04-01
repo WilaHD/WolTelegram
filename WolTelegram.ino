@@ -68,24 +68,43 @@ void handleNewMessages(int numNewMessages) {
         message += "... ... ...";
         bot.sendMessage(chat_id, message);
         wakePC();
-        millisdelay(60000);
         
-        message = "your computer is ";
+        message = "Your computer is ";
+        for (int i=0; i<3; i++)
+        {
+          millisdelay(60000);
+          if(pingPC())
+          {
+            message += "online.";
+            break;
+          }
+          if (i==2)
+            message += "offline.";
+        }
+        bot.sendMessage(chat_id, message);
+      }
+
+      if (text == "/status")
+      {
+        String message = "STATUS\n\n";
+        message += "IP: " + String(ip) + "\n";
+        message += "MAC: " + String(MACAddress) + "\n\n"; 
+        
+        message += "your computer is ";
         if(pingPC())
           message += "online";
         else
           message += "offline";
         bot.sendMessage(chat_id, message);
-        
       }
 
-      if (text == "/status")
+      if (text == "/help")
       {
-        String message = "your computer is ";
-        if(pingPC())
-          message += "online";
-        else
-          message += "offline";
+        String message = "All commands for the Bot:\n";
+        message += "/start welcome message\n";
+        message += "/wake wake your computer\n";
+        message += "/status check, if computer is online\n";
+        message += "/help show this help\n";
         bot.sendMessage(chat_id, message);
       }
     }
@@ -129,5 +148,5 @@ boolean stringArrayContains(String arr[], String w) {
 void millisdelay(long ms)
 {
   unsigned long stop_at = millis() + ms;
-  while(millis() < stop at) { }
+  while(millis() < stop_at) { }
 }
