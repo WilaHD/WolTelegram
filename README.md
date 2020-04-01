@@ -1,2 +1,2 @@
 # WolTelegram
-Start your PC over WOL with a Telegram Bot runing on a ESP32
+Start your Computer over WakeOnLan with a Telegram Bot runing on an ESP32.
