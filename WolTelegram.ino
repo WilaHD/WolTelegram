@@ -58,7 +58,7 @@ void handleNewMessages(int numNewMessages) {
       if (text == "/start")
       {
         String message = "Welcome " + from_name + " to the ultimate WolTelegram-Bot.\n";
-        message += "You can start your Computer with /wake\n";
+        message += "Type /help to show all commands.\n";
         bot.sendMessage(chat_id, message);
       }
   
