@@ -62,7 +62,7 @@ void handleNewMessages(int numNewMessages) {
         bot.sendMessage(chat_id, message);
       }
   
-      if (text == "/wake")
+      else if (text == "/wake")
       {
         String message = "I will send the Wake-On-Lan-Package.\n";
         message += "... ... ...";
@@ -84,12 +84,13 @@ void handleNewMessages(int numNewMessages) {
         bot.sendMessage(chat_id, message);
       }
 
-      if (text == "/status")
+      else if (text == "/status")
       {
         String message = "STATUS\n\n";
-        message += "IP: " + String(ip) + "\n";
+        message += "-----------------------------";
+        message += "IP: " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
         message += "MAC: " + String(MACAddress) + "\n\n"; 
-        
+        message += "-----------------------------";
         message += "your computer is ";
         if(pingPC())
           message += "online";
@@ -98,13 +99,18 @@ void handleNewMessages(int numNewMessages) {
         bot.sendMessage(chat_id, message);
       }
 
-      if (text == "/help")
+      else if (text == "/help")
       {
         String message = "All commands for the Bot:\n";
         message += "/start welcome message\n";
         message += "/wake wake your computer\n";
         message += "/status check, if computer is online\n";
         message += "/help show this help\n";
+        bot.sendMessage(chat_id, message);
+      }
+      else if (text[0] == '/')
+      {
+        String message = "Unokwn command!\nType /help for help.";
         bot.sendMessage(chat_id, message);
       }
     }
