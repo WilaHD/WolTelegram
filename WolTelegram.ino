@@ -1,3 +1,5 @@
+// DAS GROSSE LUKAS UPDATE
+
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <WiFiClientSecure.h>
@@ -42,79 +44,78 @@ void loop() {
   }
 }
 
-void handleNewMessages(int numNewMessages) {
+void handleNewMessages(int numNewMessages) 
+{
   Serial.println("handleNewMessages");
   Serial.println(String(numNewMessages));
-
-  for (int i=0; i<numNewMessages; i++)
-  {
-    String chat_id = String(bot.messages[i].chat_id);
-    String text = bot.messages[i].text;
-    String from_name = bot.messages[i].from_name;
-    if (from_name == "") from_name = "Guest";
-
-    if( stringArrayContains(chatIDs, chat_id) )
-    {
-      if (text == "/start")
-      {
-        String message = "Welcome " + from_name + " to the ultimate WolTelegram-Bot.\n";
-        message += "Type /help to show all commands.\n";
-        bot.sendMessage(chat_id, message);
-      }
   
-      else if (text == "/wake")
-      {
-        String message = "I will send the Wake-On-Lan-Package.\n";
-        message += "... ... ...";
-        bot.sendMessage(chat_id, message);
-        wakePC();
-        
-        message = "Your computer is ";
-        for (int i=0; i<3; i++)
-        {
-          millisdelay(60000);
-          if(pingPC())
-          {
-            message += "online.";
-            break;
-          }
-          if (i==2)
-            message += "offline.";
-        }
-        bot.sendMessage(chat_id, message);
-      }
+  String chat_id = String(bot.messages[numNewMessages-1].chat_id);
+  String text = bot.messages[numNewMessages-1].text;
+  String from_name = bot.messages[numNewMessages-1].from_name;
+  if (from_name == "") from_name = "Guest";
 
-      else if (text == "/status")
+  if( stringArrayContains(chatIDs, chat_id) )
+  {
+    if (text == "/start")
+    {
+      String message = "Welcome " + from_name + " to the ultimate WolTelegram-Bot.\n";
+      message += "Type /help to show all commands.\n";
+      bot.sendMessage(chat_id, message);
+    }
+
+    else if (text == "/wake")
+    {
+      String message = "I will send the Wake-On-Lan-Package.\n";
+      message += "... ... ...";
+      bot.sendMessage(chat_id, message);
+      wakePC();
+      
+      message = "Your computer is ";
+      for (int i=0; i<3; i++)
       {
-        String message = "STATUS\n\n";
-        message += "-----------------------------";
-        message += "IP: " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
-        message += "MAC: " + String(MACAddress) + "\n\n"; 
-        message += "-----------------------------";
-        message += "your computer is ";
+        millisdelay(60000);
         if(pingPC())
-          message += "online";
-        else
-          message += "offline";
-        bot.sendMessage(chat_id, message);
+        {
+          message += "online.";
+          break;
+        }
+        if (i==2)
+          message += "offline.";
       }
+      bot.sendMessage(chat_id, message);
+    }
 
-      else if (text == "/help")
-      {
-        String message = "All commands for the Bot:\n";
-        message += "/start welcome message\n";
-        message += "/wake wake your computer\n";
-        message += "/status check, if computer is online\n";
-        message += "/help show this help\n";
-        bot.sendMessage(chat_id, message);
-      }
-      else if (text[0] == '/')
-      {
-        String message = "Unokwn command!\nType /help for help.";
-        bot.sendMessage(chat_id, message);
-      }
+    else if (text == "/status")
+    {
+      String message = "STATUS\n\n";
+      message += "-----------------------------";
+      message += "IP: " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
+      message += "MAC: " + String(MACAddress) + "\n\n"; 
+      message += "-----------------------------";
+      message += "your computer is ";
+      if(pingPC())
+        message += "online";
+      else
+        message += "offline";
+      bot.sendMessage(chat_id, message);
+    }
+
+    else if (text == "/help")
+    {
+      String message = "All commands for the Bot:\n";
+      message += "/start welcome message\n";
+      message += "/wake wake your computer\n";
+      message += "/status check, if computer is online\n";
+      message += "/help show this help\n";
+      bot.sendMessage(chat_id, message);
+    }
+    else if (text[0] == '/')
+    {
+      String message = "Unokwn command!\nType /help for help.";
+      bot.sendMessage(chat_id, message);
     }
   }
+  
 }
 
 void wakePC() {
