@@ -89,7 +89,7 @@ void handleNewMessages(int numNewMessages)
     {
       String message = "STATUS\n\n";
       message += "-----------------------------";
-      message += "IP: " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
+      message += "IP:  " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
       message += "MAC: " + String(MACAddress) + "\n\n"; 
       message += "-----------------------------";
       message += "your computer is ";
@@ -97,6 +97,12 @@ void handleNewMessages(int numNewMessages)
         message += "online";
       else
         message += "offline";
+      bot.sendMessage(chat_id, message);
+    }
+
+    else if (text == "/coffee")
+    {
+      String message = "Coffee is a brewed drink prepared from roasted coffee beans, the seeds of berries from certain Coffea species. Once ripe, coffee berries are picked, processed, and dried. Dried coffee seeds are roasted to varying degrees, depending on the desired flavor.";
       bot.sendMessage(chat_id, message);
     }
 
