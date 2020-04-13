@@ -71,15 +71,13 @@ void handleNewMessages(int numNewMessages)
       wakePC();
       
       message = "Your computer is ";
-      for (int i=0; i<3; i++)
-      {
+      for (int i=0; i<3; i++) {
         millisdelay(60000);
         if(pingPC()) {
           message += "online.";
           break;
         }
-        if (i==2)
-        {
+        if (i==2) {
           message += "offline.";
         }
       }
@@ -88,13 +86,13 @@ void handleNewMessages(int numNewMessages)
 
     else if (text == "/status")
     {
-      String message = "**STATUS**\n\n";
+      String message = "STATUS\n\n";
       message += "---------------------------------------\n";
       message += "IP:  " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
       message += "MAC: " + String(MACAddress) + "\n"; 
       message += "---------------------------------------\n\n";
       message += "your computer is ";
-      if(pingPC()){
+      if(pingPC()) {
         message += "online";
       } else {
         message += "offline";
