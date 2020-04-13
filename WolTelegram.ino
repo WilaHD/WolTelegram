@@ -12,7 +12,7 @@ const char* wifipassword = "xxxxxxxxxxxxx";
 IPAddress ip(123, 456, 789, 000);                                   // target IP-Adress
 const char *MACAddress = "00:00:00:00:00:00";                       // target MAC-Adress
 const char* BotToken = "ooooooooo";                                 // token from the Bot-Father
-String chatIDs[] = { "9876543210", "123123132" };                   // insert the allowed ShatIDs
+String chatIDs[] = { "9876543210", "123123132" };                   // insert the allowed ChatIDs
 
 int Bot_mtbs = 1000; //mean time between scan messages
 long Bot_lasttime;   //last time messages' scan has been done
@@ -132,7 +132,7 @@ void wakePC() {
 }
 
 bool pingPC() {
-  return Ping.ping(ip, 3);  //send 3 pings to ip
+  return Ping.ping(ip);  //send 3 pings to ip
 }
 
 void blink(int ms) {
