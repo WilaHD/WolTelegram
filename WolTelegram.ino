@@ -4,15 +4,15 @@
 #include <WiFiUdp.h>
 #include <WiFiClientSecure.h>
 #include <WakeOnLan.h>
-#include <UniversalTelegramBot.h>                                   // please check, if you installed ArduinoJson 5.13
+#include <UniversalTelegramBot.h>                                   // please check, that you installed ArduinoJson 5.13
 #include <ESP32Ping.h>                                              // https://github.com/marian-craciunescu/ESP32Ping
 
 const char* wifissid     = "SSID";                                  
 const char* wifipassword = "xxxxxxxxxxxxx";
-IPAddress ip = { 123, 456, 789, 000 };                              // target IP-Adress
+IPAddress ip(123, 456, 789, 000);                                   // target IP-Adress
 const char *MACAddress = "00:00:00:00:00:00";                       // target MAC-Adress
 const char* BotToken = "ooooooooo";                                 // token from the Bot-Father
-String chatIDs[] = { "9876543210" };                                // insert the allowed ShatIDs
+String chatIDs[] = { "9876543210", "123123132" };                   // insert the allowed ShatIDs
 
 int Bot_mtbs = 1000; //mean time between scan messages
 long Bot_lasttime;   //last time messages' scan has been done
@@ -74,29 +74,31 @@ void handleNewMessages(int numNewMessages)
       for (int i=0; i<3; i++)
       {
         millisdelay(60000);
-        if(pingPC())
-        {
+        if(pingPC()) {
           message += "online.";
           break;
         }
         if (i==2)
+        {
           message += "offline.";
+        }
       }
       bot.sendMessage(chat_id, message);
     }
 
     else if (text == "/status")
     {
-      String message = "STATUS\n\n";
-      message += "-----------------------------";
+      String message = "**STATUS**\n\n";
+      message += "---------------------------------------\n";
       message += "IP:  " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
-      message += "MAC: " + String(MACAddress) + "\n\n"; 
-      message += "-----------------------------";
+      message += "MAC: " + String(MACAddress) + "\n"; 
+      message += "---------------------------------------\n\n";
       message += "your computer is ";
-      if(pingPC())
+      if(pingPC()){
         message += "online";
-      else
+      } else {
         message += "offline";
+      }
       bot.sendMessage(chat_id, message);
     }
 
@@ -132,10 +134,7 @@ void wakePC() {
 }
 
 bool pingPC() {
-  int result = Ping.ping(ip);
-  if( Ping.averageTime() > 0 )
-    return true;
-  return false;
+  return Ping.ping(ip, 3);  //send 3 pings to ip
 }
 
 void blink(int ms) {
