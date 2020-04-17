@@ -5,7 +5,7 @@
 #include <WiFiClientSecure.h>
 #include <WakeOnLan.h>
 #include <UniversalTelegramBot.h>                                   // please check, that you installed ArduinoJson 5.13
-#inchandleNewMessageslude <ESP32Ping.h>                             // https://github.com/marian-craciunescu/ESP32Ping
+#include <ESP32Ping.h>                             // https://github.com/marian-craciunescu/ESP32Ping
 
 const char* wifissid     = "SSID";
 const char* wifipassword = "xxxxxxxxxxxxx";
@@ -13,7 +13,7 @@ const char* wifipassword = "xxxxxxxxxxxxx";
 IPAddress ip(123, 456, 789, 000);                                   // target IP-Adress
 const char *MACAddress = "00:00:00:00:00:00";                       // target MAC-Adress
 const char *BotToken = "ooooooooo";                                 // token from the Bot-Father
-const String chatIDs[] = { "9876543210", "123123132" };             // whitelist for all allowed ChatIDs
+String chatIDs[] = { "9876543210", "123123132" };             // whitelist for all allowed ChatIDs
 
 const int Bot_mtbs = 1000;  //mean time between scan messages
 long Bot_lasttime;          //last time messages' scan has been done
@@ -52,11 +52,11 @@ void handleNewMessages(int numNewMessages) {
   String from_name = bot.messages[numNewMessages-1].from_name;
   if (from_name == "") from_name = "Guest";
 
-  if (!stringArrayContains(chatIDs, chat_id) ) {    // check if chatID is allowed
+  if (stringArrayContains(chatIDs, chat_id) ) {    // check if chatID is allowed
     return; // send no message
   }
   
-  if (text handleNewMessages== "/start") {
+  if (text == "/start") {
     String message = "Welcome " + from_name + " to the ultimate WolTelegram-Bot.\n";
     message += "Type /help to show all commands.\n";
     bot.sendMessage(chat_id, message);
@@ -115,8 +115,6 @@ void handleNewMessages(int numNewMessages) {
     String message = "Unokwn command!\nType /help for help.";
     bot.sendMessage(chat_id, message);
   }
-  
-  
 }
 
 void wakePC() {
