@@ -1,4 +1,4 @@
-// DAS GROSSE LUKAS UPDATE
+// Some Bug-Fix
 
 #include <WiFi.h>
 #include <WiFiUdp.h>
@@ -7,15 +7,16 @@
 #include <UniversalTelegramBot.h>                                   // please check, that you installed ArduinoJson 5.13
 #include <ESP32Ping.h>                                              // https://github.com/marian-craciunescu/ESP32Ping
 
-const char* wifissid     = "SSID";                                  
+const char* wifissid     = "SSID";
 const char* wifipassword = "xxxxxxxxxxxxx";
+
 IPAddress ip(123, 456, 789, 000);                                   // target IP-Adress
 const char *MACAddress = "00:00:00:00:00:00";                       // target MAC-Adress
-const char* BotToken = "ooooooooo";                                 // token from the Bot-Father
-String chatIDs[] = { "9876543210", "123123132" };                   // insert the allowed ChatIDs
+const char *BotToken = "ooooooooo";                                 // token from the Bot-Father
+const String chatIDs[] = { "9876543210", "123123132" };             // insert the allowed ChatIDs
 
-int Bot_mtbs = 1000; //mean time between scan messages
-long Bot_lasttime;   //last time messages' scan has been done
+const int Bot_mtbs = 1000;  //mean time between scan messages
+long Bot_lasttime;          //last time messages' scan has been done
 
 WiFiUDP UDP;
 WakeOnLan WOL(UDP);
@@ -23,17 +24,20 @@ WiFiClientSecure client;
 UniversalTelegramBot bot(BotToken, client);
 
 void setup() {
-  pinMode(2, OUTPUT);
+  pinMode(2, OUTPUT);     // Blink-LED
 
-  WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);    
   WiFi.begin(wifissid, wifipassword);
-  while (WiFi.status() != WL_CONNECTED) { delay(500); }
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
   blink(500); //wifi is connected
 }
 
 void loop() {
-  if (millis() > Bot_lasttime + Bot_mtbs)  {
+  if (millis() > Bot_lasttime + Bot_mtbs) {                                 //check every second for messages
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
+    handleNewMessages(bot.last_message_received + 1);
 
     while(numNewMessages) {
       handleNewMessages(numNewMessages);
@@ -44,8 +48,7 @@ void loop() {
   }
 }
 
-void handleNewMessages(int numNewMessages) 
-{
+void handleNewMessages(int numNewMessages) {
   Serial.println("handleNewMessages");
   Serial.println(String(numNewMessages));
   
@@ -54,17 +57,14 @@ void handleNewMessages(int numNewMessages)
   String from_name = bot.messages[numNewMessages-1].from_name;
   if (from_name == "") from_name = "Guest";
 
-  if( stringArrayContains(chatIDs, chat_id) )
-  {
-    if (text == "/start")
-    {
+  if( stringArrayContains(chatIDs, chat_id) ) {
+    if (text == "/start") {
       String message = "Welcome " + from_name + " to the ultimate WolTelegram-Bot.\n";
       message += "Type /help to show all commands.\n";
       bot.sendMessage(chat_id, message);
     }
 
-    else if (text == "/wake")
-    {
+    else if (text == "/wake") {
       String message = "I will send the Wake-On-Lan-Package.\n";
       message += "... ... ...";
       bot.sendMessage(chat_id, message);
@@ -84,8 +84,7 @@ void handleNewMessages(int numNewMessages)
       bot.sendMessage(chat_id, message);
     }
 
-    else if (text == "/status")
-    {
+    else if (text == "/status") {
       String message = "STATUS\n\n";
       message += "---------------------------------------\n";
       message += "IP:  " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
@@ -100,14 +99,12 @@ void handleNewMessages(int numNewMessages)
       bot.sendMessage(chat_id, message);
     }
 
-    else if (text == "/coffee")
-    {
+    else if (text == "/coffee") {
       String message = "Coffee is a brewed drink prepared from roasted coffee beans, the seeds of berries from certain Coffea species. Once ripe, coffee berries are picked, processed, and dried. Dried coffee seeds are roasted to varying degrees, depending on the desired flavor.";
       bot.sendMessage(chat_id, message);
     }
 
-    else if (text == "/help")
-    {
+    else if (text == "/help") {
       String message = "All commands for the Bot:\n";
       message += "/start welcome message\n";
       message += "/wake wake your computer\n";
@@ -115,8 +112,8 @@ void handleNewMessages(int numNewMessages)
       message += "/help show this help\n";
       bot.sendMessage(chat_id, message);
     }
-    else if (text[0] == '/')
-    {
+    
+    else if (text[0] == '/') {
       String message = "Unokwn command!\nType /help for help.";
       bot.sendMessage(chat_id, message);
     }
