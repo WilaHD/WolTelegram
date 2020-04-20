@@ -6,6 +6,7 @@
 #include <WakeOnLan.h>
 #include <UniversalTelegramBot.h>                  // please check, that you installed ArduinoJson 5.13
 #include <ESP32Ping.h>                             // https://github.com/marian-craciunescu/ESP32Ping
+#include <esp32sshclient.h>                        // https://github.com/J-Rios/Arduino-esp32sshclient
 
 const char* wifissid     = "SSID";
 const char* wifipassword = "xxxxxxxxxxxxx";
@@ -14,9 +15,15 @@ IPAddress ip(123, 456, 789, 000);                                   // target IP
 const char *MACAddress = "00:00:00:00:00:00";                       // target MAC-Adress
 const char *BotToken = "ooooooooo";                                 // token from the Bot-Father
 String chatIDs[] = { "9876543210", "123123132" };                   // whitelist for all allowed ChatIDs
+
+char *ssh_user = "username";
+char *ssh_pass = "password" ;    
+uint16_t ssh_port = 22;               //default = 22
+
 WiFiUDP UDP;
 WakeOnLan WOL(UDP);
 WiFiClientSecure client;
+ESP32SSHCLIENT ssh_client;
 UniversalTelegramBot bot(BotToken, client);
 
 void setup() {
@@ -90,6 +97,26 @@ void handleNewMessages(int numNewMessages) {
 
   else if (text == "/coffee") {
     String message = "Coffee is a brewed drink prepared from roasted coffee beans, the seeds of berries from certain Coffea species. Once ripe, coffee berries are picked, processed, and dried. Dried coffee seeds are roasted to varying degrees, depending on the desired flavor.";
+    bot.sendMessage(chat_id, message);
+  }
+
+  else if (text == "/shutdown") {
+    String message = "shutdown ...";
+    bot.sendMessage(chat_id, message);
+
+    String str = String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]);
+    const char *ssh_host = str.c_str();
+    ssh_client.connect(ssh_host, ssh_port, ssh_user, ssh_pass);
+    ssh_client.send_cmd("uptime");
+    ssh_client.disconnect();
+
+    message = "your computer is ...";
+    millisdelay(20000);
+    if(pingPC()) {
+      message += "online";
+    } else {
+      message += "offline";
+    }
     bot.sendMessage(chat_id, message);
   }
   
