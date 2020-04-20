@@ -76,7 +76,7 @@ void handleNewMessages(int numNewMessages) {
   }
 
   else if (text == "/status") {
-    String message = "STATUS\n\n";
+    String message = "STATUS\n";
     message += "IP:  " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
     message += "MAC: " + String(MACAddress) + "\n"; 
     message += "your computer is ";
