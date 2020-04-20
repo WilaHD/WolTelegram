@@ -16,9 +16,9 @@ const char *MACAddress = "00:00:00:00:00:00";                       // target MA
 const char *BotToken = "ooooooooo";                                 // token from the Bot-Father
 String chatIDs[] = { "9876543210", "123123132" };                   // whitelist for all allowed ChatIDs
 
-char *ssh_user = "username";
-char *ssh_pass = "password" ;    
-uint16_t ssh_port = 22;               //default = 22
+const char *ssh_user = "username";
+const char *ssh_pass = "password" ;    
+const int ssh_port = 22;               //default = 22
 
 WiFiUDP UDP;
 WakeOnLan WOL(UDP);
@@ -107,10 +107,10 @@ void handleNewMessages(int numNewMessages) {
     String str = String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]);
     const char *ssh_host = str.c_str();
     ssh_client.connect(ssh_host, ssh_port, ssh_user, ssh_pass);
-    ssh_client.send_cmd("uptime");
+    ssh_client.send_cmd("/sbin/shutdown");
     ssh_client.disconnect();
 
-    message = "your computer is ...";
+    message = "your computer is ";
     millisdelay(20000);
     if(pingPC()) {
       message += "online";
@@ -125,6 +125,7 @@ void handleNewMessages(int numNewMessages) {
     message += "/start welcome message\n";
     message += "/wake wake your computer\n";
     message += "/status check, if computer is online\n";
+    message += "/shutdown your computer\n";
     message += "/help show this help\n";
     bot.sendMessage(chat_id, message);
   }
