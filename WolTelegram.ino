@@ -4,7 +4,7 @@
 #include <WiFiUdp.h>
 #include <WiFiClientSecure.h>
 #include <WakeOnLan.h>
-#include <UniversalTelegramBot.h>                                   // please check, that you installed ArduinoJson 5.13
+#include <UniversalTelegramBot.h>                  // please check, that you installed ArduinoJson 5.13
 #include <ESP32Ping.h>                             // https://github.com/marian-craciunescu/ESP32Ping
 
 const char* wifissid     = "SSID";
@@ -13,46 +13,39 @@ const char* wifipassword = "xxxxxxxxxxxxx";
 IPAddress ip(123, 456, 789, 000);                                   // target IP-Adress
 const char *MACAddress = "00:00:00:00:00:00";                       // target MAC-Adress
 const char *BotToken = "ooooooooo";                                 // token from the Bot-Father
-String chatIDs[] = { "9876543210", "123123132" };             // whitelist for all allowed ChatIDs
-
-const int Bot_mtbs = 1000;  //mean time between scan messages
-long Bot_lasttime;          //last time messages' scan has been done
-
+String chatIDs[] = { "9876543210", "123123132" };                   // whitelist for all allowed ChatIDs
 WiFiUDP UDP;
 WakeOnLan WOL(UDP);
 WiFiClientSecure client;
 UniversalTelegramBot bot(BotToken, client);
 
 void setup() {
-  pinMode(2, OUTPUT);     // Blink-LED
+  pinMode(2, OUTPUT);     // Onboard-Blink-LED
 
   WiFi.mode(WIFI_STA);    
   WiFi.begin(wifissid, wifipassword);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
-  blink(500); //wifi is connected
+  blink(500); //show: wifi is connected
 }
 
-void loop() {
-  if (millis() > Bot_lasttime + Bot_mtbs) {                                 //check every second for messages
+void loop() {                      
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
-
     if(numNewMessages) {
       handleNewMessages(numNewMessages);
     }
     
-    Bot_lasttime = millis();
-  }
+    millisdelay(1000); //check every second for messages
 }
 
 void handleNewMessages(int numNewMessages) {
-  String chat_id = String(bot.messages[numNewMessages-1].chat_id);
+  String chat_id = "" + bot.messages[numNewMessages-1].chat_id;
   String text = bot.messages[numNewMessages-1].text;
   String from_name = bot.messages[numNewMessages-1].from_name;
   if (from_name == "") from_name = "Guest";
 
-  if (stringArrayContains(chatIDs, chat_id) ) {    // check if chatID is allowed
+  if (!stringArrayContains(chatIDs, chat_id) ) {    // check if chatID is allowed
     return; // send no message
   }
   
@@ -84,10 +77,8 @@ void handleNewMessages(int numNewMessages) {
 
   else if (text == "/status") {
     String message = "STATUS\n\n";
-    message += "---------------------------------------\n";
     message += "IP:  " + String(ip[0]) + "." + String(ip[1]) + "."+ String(ip[2]) + "."+ String(ip[3]) + "\n";
     message += "MAC: " + String(MACAddress) + "\n"; 
-    message += "---------------------------------------\n\n";
     message += "your computer is ";
     if(pingPC()) {
       message += "online";
@@ -129,12 +120,9 @@ bool pingPC() {
 }
 
 void blink(int ms) {
-  digitalWrite(2, HIGH);
-  delay(ms);
-  digitalWrite(2, LOW);
-  delay(ms);
-  digitalWrite(2, HIGH);
-  delay(ms);
+  digitalWrite(2, HIGH);  delay(ms);
+  digitalWrite(2, LOW);   delay(ms);
+  digitalWrite(2, HIGH);  delay(ms);
   digitalWrite(2, LOW);
 }
 
